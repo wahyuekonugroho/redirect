@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Loading...</title>
+
+  <!-- Redirect setelah 3 detik -->
+  <meta http-equiv="refresh" content="3;url=https://tujuan-anda.com">
+
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: #ffffff;
+      flex-direction: column;
+      font-family: Arial, sans-serif;
+    }
+
+    img {
+      height: 500px;
+      animation: fadeIn 1.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    p {
+      margin-top: 20px;
+      color: #555;
+      font-size: 18px;
+    }
+  </style>
+
+  <script>
+    setTimeout(function() {
+      window.location.href = "https://tujuan-anda.com";
+    }, 3000);
+  </script>
+</head>
+<body>
+
+  <!-- Logo dari URL -->
+  <img src="https://www.gayamotor.astra.co.id/images/logo/logo-primary.png" alt="Logo">
+
+  <p>Mohon tunggu, sedang dialihkan...</p>
+
+</body>
+</html>
