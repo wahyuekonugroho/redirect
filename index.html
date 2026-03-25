@@ -2,6 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pendaftaran Skill Contest 2026</title>
 
 <style>
@@ -20,13 +21,13 @@ body {
   z-index: 0;
 }
 
-/* SVG GEAR */
+/* GEAR */
 .bg {
   position: fixed;
   width: 100%;
   height: 100%;
   z-index: 1;
-  opacity: 0.4;
+  opacity: 0.35;
   pointer-events: none;
 }
 
@@ -35,73 +36,85 @@ body {
   position: relative;
   z-index: 3;
   height: 100vh;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  backdrop-filter: blur(4px);
+  text-align: center;
+  backdrop-filter: blur(3px);
 }
 
 /* LOGO */
 .logo {
-  height: 180px;
+  height: 160px;
   margin-bottom: 20px;
   animation: floatSmooth 5s ease-in-out infinite;
 }
 
-/* FLOAT */
 @keyframes floatSmooth {
   0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
+  50% { transform: translateY(-10px); }
 }
 
 /* BOUNCE */
 .logo.bounce {
   animation: bounce 0.6s infinite;
 }
-
 .logo.bounce-strong {
   animation: bounceStrong 0.4s infinite;
 }
 
 @keyframes bounce {
   0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
+  50% { transform: translateY(-18px); }
 }
 
 @keyframes bounceStrong {
   0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-35px); }
+  50% { transform: translateY(-30px); }
 }
 
-/* COUNTDOWN */
+/* COUNTDOWN MERAH + GOLD GLOW */
 #countdown {
-  font-size: 36px;
+  font-size: 32px;
   font-weight: bold;
   color: #d32f2f;
+  letter-spacing: 1px;
+
   text-shadow:
-    0 0 5px rgba(255,215,0,0.8),
-    0 0 10px rgba(255,215,0,0.6),
-    0 0 20px rgba(255,193,7,0.6),
-    0 0 30px rgba(255,152,0,0.5);
-  animation: glowPulse 2s infinite;
+    0 0 5px rgba(255,215,0,0.9),
+    0 0 10px rgba(255,193,7,0.8),
+    0 0 20px rgba(255,152,0,0.7),
+    0 0 30px rgba(255,215,0,0.6);
+
+  animation: goldGlowPulse 2s ease-in-out infinite;
 }
 
-@keyframes glowPulse {
-  0% { text-shadow: 0 0 5px rgba(255,215,0,0.6); }
-  50% { text-shadow: 0 0 25px rgba(255,215,0,1); }
-  100% { text-shadow: 0 0 5px rgba(255,215,0,0.6); }
+/* GLOW ANIMATION */
+@keyframes goldGlowPulse {
+  0% {
+    text-shadow:
+      0 0 5px rgba(255,215,0,0.6),
+      0 0 10px rgba(255,193,7,0.5);
+  }
+  50% {
+    text-shadow:
+      0 0 10px rgba(255,215,0,1),
+      0 0 25px rgba(255,193,7,0.9),
+      0 0 40px rgba(255,152,0,0.8),
+      0 0 60px rgba(255,215,0,0.6);
+  }
+  100% {
+    text-shadow:
+      0 0 5px rgba(255,215,0,0.6),
+      0 0 10px rgba(255,193,7,0.5);
+  }
 }
 
 /* GEAR ROTATION */
-@keyframes cw {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-@keyframes ccw {
-  from { transform: rotate(360deg); }
-  to { transform: rotate(0deg); }
-}
+@keyframes cw { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
+@keyframes ccw { from { transform: rotate(360deg);} to { transform: rotate(0deg);} }
 
 .gear-big { animation: cw 20s linear infinite; }
 .gear-small { animation: ccw 10s linear infinite; }
@@ -110,13 +123,13 @@ body {
 /* FOOTER */
 .footer {
   position: fixed;
-  bottom: 10px;
+  bottom: 8px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 10px;
+  font-size: 9px;
   color: #263238;
   background: rgba(255,255,255,0.9);
-  padding: 4px 12px;
+  padding: 4px 10px;
   border-radius: 6px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   opacity: 0;
@@ -125,6 +138,18 @@ body {
 }
 .footer.show { opacity: 1; }
 
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .logo { height: 120px; }
+  #countdown { font-size: 24px; }
+}
+
+@media (max-width: 480px) {
+  .logo { height: 90px; }
+  #countdown { font-size: 18px; }
+  h2 { font-size: 16px; }
+  p { font-size: 12px; }
+}
 </style>
 </head>
 
@@ -155,7 +180,7 @@ body {
 <p class="footer">Designed by Wahyu (Innovation Committee)</p>
 
 <!-- SOUND -->
-<audio id="gearSound" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" preload="auto"></audio>
+<audio id="gearSound" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
 
 <script>
 const target = new Date("2026-03-30T00:00:00+07:00").getTime();
@@ -201,7 +226,6 @@ setInterval(()=>{
     logo.classList.add("bounce");
   }
 
-  /* dynamic sound */
   if(d < 5000){
     playSound();
   }
@@ -221,21 +245,24 @@ let w,h,p=[];
 function r(){w=c.width=innerWidth;h=c.height=innerHeight;}
 r(); addEventListener("resize",r);
 
-for(let i=0;i<60;i++){
-  p.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-0.5)*0.4,vy:(Math.random()-0.5)*0.4});
+for(let i=0;i<50;i++){
+  p.push({
+    x:Math.random()*w,
+    y:Math.random()*h,
+    vx:(Math.random()-0.5)*0.3,
+    vy:(Math.random()-0.5)*0.3
+  });
 }
 
 function draw(){
   x.clearRect(0,0,w,h);
   p.forEach(pt=>{
-    pt.x+=pt.vx; pt.y+=pt.vy;
+    pt.x+=pt.vx;
+    pt.y+=pt.vy;
     x.beginPath();
     x.arc(pt.x,pt.y,2,0,6.28);
-    x.fillStyle="rgba(21,101,192,0.8)";
-    x.shadowColor="rgba(21,101,192,0.6)";
-    x.shadowBlur=10;
+    x.fillStyle="rgba(21,101,192,0.7)";
     x.fill();
-    x.shadowBlur=0;
   });
   requestAnimationFrame(draw);
 }
