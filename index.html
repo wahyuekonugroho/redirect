@@ -42,45 +42,55 @@ body {
   backdrop-filter: blur(4px);
 }
 
-img {
+/* LOGO */
+.logo {
   height: 180px;
   margin-bottom: 20px;
+  animation: floatSmooth 5s ease-in-out infinite;
 }
 
-/* COUNTDOWN MERAH + GOLD GLOW */
+/* FLOAT */
+@keyframes floatSmooth {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+/* BOUNCE */
+.logo.bounce {
+  animation: bounce 0.6s infinite;
+}
+
+.logo.bounce-strong {
+  animation: bounceStrong 0.4s infinite;
+}
+
+@keyframes bounce {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes bounceStrong {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-35px); }
+}
+
+/* COUNTDOWN */
 #countdown {
   font-size: 36px;
   font-weight: bold;
   color: #d32f2f;
-  letter-spacing: 1px;
-
   text-shadow:
     0 0 5px rgba(255,215,0,0.8),
     0 0 10px rgba(255,215,0,0.6),
     0 0 20px rgba(255,193,7,0.6),
     0 0 30px rgba(255,152,0,0.5);
-
-  animation: glowPulse 2s infinite ease-in-out;
+  animation: glowPulse 2s infinite;
 }
 
-/* PULSE EFFECT */
 @keyframes glowPulse {
-  0% {
-    text-shadow:
-      0 0 5px rgba(255,215,0,0.6),
-      0 0 10px rgba(255,193,7,0.5);
-  }
-  50% {
-    text-shadow:
-      0 0 10px rgba(255,215,0,1),
-      0 0 25px rgba(255,193,7,0.9),
-      0 0 40px rgba(255,152,0,0.7);
-  }
-  100% {
-    text-shadow:
-      0 0 5px rgba(255,215,0,0.6),
-      0 0 10px rgba(255,193,7,0.5);
-  }
+  0% { text-shadow: 0 0 5px rgba(255,215,0,0.6); }
+  50% { text-shadow: 0 0 25px rgba(255,215,0,1); }
+  100% { text-shadow: 0 0 5px rgba(255,215,0,0.6); }
 }
 
 /* GEAR ROTATION */
@@ -88,26 +98,14 @@ img {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
-
 @keyframes ccw {
   from { transform: rotate(360deg); }
   to { transform: rotate(0deg); }
 }
 
-.gear-big {
-  transform-origin: center;
-  animation: cw 20s linear infinite;
-}
-
-.gear-small {
-  transform-origin: center;
-  animation: ccw 10s linear infinite;
-}
-
-.gear-small2 {
-  transform-origin: center;
-  animation: ccw 12s linear infinite;
-}
+.gear-big { animation: cw 20s linear infinite; }
+.gear-small { animation: ccw 10s linear infinite; }
+.gear-small2 { animation: ccw 12s linear infinite; }
 
 /* FOOTER */
 .footer {
@@ -115,14 +113,18 @@ img {
   bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 8px;
+  font-size: 10px;
+  color: #263238;
+  background: rgba(255,255,255,0.9);
+  padding: 4px 12px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   opacity: 0;
   transition: 1s;
+  z-index: 999;
 }
+.footer.show { opacity: 1; }
 
-.footer.show {
-  opacity: 1;
-}
 </style>
 </head>
 
@@ -130,31 +132,21 @@ img {
 
 <canvas id="network"></canvas>
 
-<!-- GEAR SYSTEM -->
+<!-- GEAR -->
 <svg class="bg" viewBox="0 0 800 600">
-
-  <!-- Gear Besar -->
   <g class="gear-big">
     <circle cx="300" cy="300" r="90" fill="none" stroke="#455a64" stroke-width="12"/>
-    <circle cx="300" cy="300" r="35" fill="none" stroke="#90a4ae" stroke-width="5"/>
   </g>
-
-  <!-- Gear Kecil -->
   <g class="gear-small">
     <circle cx="420" cy="300" r="50" fill="none" stroke="#78909c" stroke-width="10"/>
-    <circle cx="420" cy="300" r="20" fill="none" stroke="#cfd8dc" stroke-width="4"/>
   </g>
-
-  <!-- Gear tambahan -->
   <g class="gear-small2">
     <circle cx="500" cy="220" r="40" fill="none" stroke="#607d8b" stroke-width="8"/>
-    <circle cx="500" cy="220" r="16" fill="none" stroke="#b0bec5" stroke-width="3"/>
   </g>
-
 </svg>
 
 <div class="container">
-  <img src="https://www.gayamotor.astra.co.id/images/logo/logo-primary.png">
+  <img class="logo" src="https://www.gayamotor.astra.co.id/images/logo/logo-primary.png">
   <h2>Pendaftaran Skill Contest 2026</h2>
   <p>Pendaftaran akan dibuka dalam:</p>
   <div id="countdown">Loading...</div>
@@ -162,18 +154,39 @@ img {
 
 <p class="footer">Designed by Wahyu (Innovation Committee)</p>
 
+<!-- SOUND -->
+<audio id="gearSound" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" preload="auto"></audio>
+
 <script>
-/* COUNTDOWN */
 const target = new Date("2026-03-30T00:00:00+07:00").getTime();
 const el = document.getElementById("countdown");
+const logo = document.querySelector(".logo");
+const sound = document.getElementById("gearSound");
 
-function f(n){ return n.toString().padStart(2,'0'); }
+/* unlock audio */
+document.addEventListener("click", () => {
+  sound.play().then(()=>{
+    sound.pause();
+    sound.currentTime = 0;
+  }).catch(()=>{});
+}, { once:true });
 
+function playSound(){
+  sound.currentTime = 0;
+  sound.volume = 0.2;
+  sound.play().catch(()=>{});
+}
+
+/* COUNTDOWN */
 setInterval(()=>{
-  let d = target - new Date().getTime();
+  let now = new Date().getTime();
+  let d = target - now;
 
-  if(d<=0){
-    el.innerHTML="✅ Pendaftaran telah dibuka!";
+  if(d <= 0){
+    el.innerHTML = "✅ Pendaftaran telah dibuka!";
+    logo.classList.remove("bounce");
+    logo.classList.add("bounce-strong");
+    playSound();
     return;
   }
 
@@ -182,13 +195,23 @@ setInterval(()=>{
   let mm=Math.floor((d/(1000*60))%60);
   let ss=Math.floor((d/1000)%60);
 
-  el.innerHTML=`${f(dd)} hari ${f(hh)} jam ${f(mm)} menit ${f(ss)} detik`;
+  el.innerHTML=`${dd} hari ${hh} jam ${mm} menit ${ss} detik`;
+
+  if(d < 10000){
+    logo.classList.add("bounce");
+  }
+
+  /* dynamic sound */
+  if(d < 5000){
+    playSound();
+  }
+
 },1000);
 
 /* FOOTER */
 setTimeout(()=>{
   document.querySelector(".footer").classList.add("show");
-},8000);
+},4000);
 
 /* NETWORK */
 const c=document.getElementById("network");
@@ -199,21 +222,13 @@ function r(){w=c.width=innerWidth;h=c.height=innerHeight;}
 r(); addEventListener("resize",r);
 
 for(let i=0;i<60;i++){
-  p.push({
-    x:Math.random()*w,
-    y:Math.random()*h,
-    vx:(Math.random()-0.5)*0.4,
-    vy:(Math.random()-0.5)*0.4
-  });
+  p.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-0.5)*0.4,vy:(Math.random()-0.5)*0.4});
 }
 
 function draw(){
   x.clearRect(0,0,w,h);
-
   p.forEach(pt=>{
-    pt.x+=pt.vx;
-    pt.y+=pt.vy;
-
+    pt.x+=pt.vx; pt.y+=pt.vy;
     x.beginPath();
     x.arc(pt.x,pt.y,2,0,6.28);
     x.fillStyle="rgba(21,101,192,0.8)";
@@ -222,10 +237,8 @@ function draw(){
     x.fill();
     x.shadowBlur=0;
   });
-
   requestAnimationFrame(draw);
 }
-
 draw();
 </script>
 
