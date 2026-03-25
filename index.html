@@ -4,9 +4,6 @@
   <meta charset="UTF-8">
   <title>Pendaftaran Skill Contest 2026</title>
 
-  <!-- Redirect setelah 3 detik -->
-  <meta http-equiv="refresh" content="10;url=https://docs.google.com/forms/d/e/1FAIpQLSfhlgr9a9cmngx78u7G1JMut_s-SwvM-edgAMAvkHxe04hM1w/viewform?usp=send_form">
-
   <style>
     body {
       display: flex;
@@ -17,42 +14,103 @@
       background: #ffffff;
       flex-direction: column;
       font-family: Arial, sans-serif;
+      text-align: center;
     }
 
     img {
-      height: 300px;
-      animation: fadeIn 4s ease-in-out;
+      height: 220px;
+      margin-bottom: 20px;
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+    }
+
+    #countdown {
+      font-size: 28px;
+      font-weight: bold;
+      color: #d32f2f;
+      margin: 20px 0;
+    }
+
+    a {
+      margin-top: 15px;
+      display: inline-block;
+      color: #1976d2;
+      text-decoration: none;
+    }
+
+    /* Footer */
+    .footer {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #999;
+      text-align: center;
+      font-size: clamp(6px, 1.5vw, 10px);
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    .footer.show {
+      opacity: 1;
     }
 
     @keyframes fadeIn {
       0% { opacity: 0; transform: scale(0.9); }
       100% { opacity: 1; transform: scale(1); }
     }
-
-    p {
-      margin-top: 20px;
-      color: #555;
-      font-size: 18px;
-    }
   </style>
-
-  <script>
-    setTimeout(function() {
-      window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSfhlgr9a9cmngx78u7G1JMut_s-SwvM-edgAMAvkHxe04hM1w/viewform?usp=send_form";
-    }, 10000);
-  </script>
 </head>
 <body>
 
-  <!-- Logo dari URL -->
   <img src="https://www.gayamotor.astra.co.id/images/logo/logo-primary.png" alt="Logo">
-  <p></p>
-  <p>Mohon tunggu, sedang dialihkan...</p>
-</br>
-</br>
-    <p class="footer">Innovation Committee by Wahyu</p>
 
+  <h2>Pendaftaran Skill Contest 2026</h2>
+  <p>Pendaftaran akan dibuka dalam:</p>
 
-  
+  <div id="countdown">Loading...</div>
+
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSfhlgr9a9cmngx78u7G1JMut_s-SwvM-edgAMAvkHxe04hM1w/viewform?usp=send_form">
+    Klik di sini jika tidak otomatis
+  </a>
+
+  <p class="footer">Innovation Committee by Wahyu</p>
+
+  <script>
+    const targetDate = new Date(2026, 3, 30, 0, 0, 0).getTime();
+
+    const countdownElement = document.getElementById("countdown");
+
+    const interval = setInterval(() => {
+      const now = new Date().getTime();
+      const distance = targetDate - now;
+
+      if (distance <= 0) {
+        clearInterval(interval);
+        countdownElement.innerHTML = "Pendaftaran Skill Contest dan MASIF 2026 telah dibuka!";
+        window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSfhlgr9a9cmngx78u7G1JMut_s-SwvM-edgAMAvkHxe04hM1w/viewform?usp=send_form";
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((distance / (1000 * 60)) % 60);
+      const seconds = Math.floor((distance / 1000) % 60);
+
+      countdownElement.innerHTML =
+        days + " hari " +
+        hours + " jam " +
+        minutes + " menit " +
+        seconds + " detik";
+    }, 1000);
+
+    setTimeout(() => {
+      document.querySelector(".footer").classList.add("show");
+    }, 3000);
+  </script>
+
 </body>
 </html>
