@@ -12,7 +12,7 @@
       background: #ffffff;
     }
 
-    /* Canvas background */
+    /* Background Canvas */
     #network {
       position: fixed;
       top: 0;
@@ -63,7 +63,7 @@
       left: 50%;
       transform: translateX(-50%);
       color: rgba(0,0,0,0.5);
-      font-size: clamp(8px, 1.5vw, 10px);
+      font-size: 8px;
       opacity: 0;
       transition: opacity 1s ease;
       z-index: 1;
@@ -90,10 +90,6 @@
   <p>Pendaftaran akan dibuka dalam:</p>
 
   <div id="countdown">Loading...</div>
-
-  <a id="manualLink" href="https://docs.google.com/forms/d/e/1FAIpQLSfhlgr9a9cmngx78u7G1JMut_s-SwvM-edgAMAvkHxe04hM1w/viewform?usp=send_form">
-    Klik di sini jika tidak otomatis
-  </a>
 </div>
 
 <p class="footer">Designed by Wahyu (Innovation Committee)</p>
@@ -130,70 +126,112 @@ const interval = setInterval(() => {
     format(d)+" hari "+format(h)+" jam "+format(m)+" menit "+format(s)+" detik";
 }, 1000);
 
-/* ================= FOOTER DELAY ================= */
+/* ================= FOOTER ================= */
 setTimeout(() => {
   document.querySelector(".footer").classList.add("show");
-}, 3000);
+}, 6000);
 
 /* ================= NETWORK BACKGROUND ================= */
 const canvas = document.getElementById("network");
 const ctx = canvas.getContext("2d");
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
+let width, height;
 let particles = [];
+const PARTICLE_COUNT = 80;
+const MAX_DISTANCE = 140;
 
-for (let i = 0; i < 60; i++) {
-  particles.push({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    vx: (Math.random() - 0.5) * 0.5,
-    vy: (Math.random() - 0.5) * 0.5
-  });
+let mouse = { x: null, y: null };
+
+function resize() {
+  width = canvas.width = window.innerWidth;
+  height = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
+window.addEventListener("mousemove", (e) => {
+  mouse.x = e.x;
+  mouse.y = e.y;
+});
+
+class Particle {
+  constructor() {
+    this.x = Math.random() * width;
+    this.y = Math.random() * height;
+    this.vx = (Math.random() - 0.5) * 0.6;
+    this.vy = (Math.random() - 0.5) * 0.6;
+    this.size = Math.random() * 2 + 1;
+  }
+
+  move() {
+    this.x += this.vx;
+    this.y += this.vy;
+
+    if (this.x <= 0 || this.x >= width) this.vx *= -1;
+    if (this.y <= 0 || this.y >= height) this.vy *= -1;
+  }
+
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(0,0,0,0.25)";
+    ctx.fill();
+  }
 }
 
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+for (let i = 0; i < PARTICLE_COUNT; i++) {
+  particles.push(new Particle());
+}
 
-  particles.forEach(p => {
-    p.x += p.vx;
-    p.y += p.vy;
+function connect() {
+  for (let a = 0; a < particles.length; a++) {
+    for (let b = a + 1; b < particles.length; b++) {
+      let dx = particles[a].x - particles[b].x;
+      let dy = particles[a].y - particles[b].y;
+      let dist = Math.sqrt(dx * dx + dy * dy);
 
-    if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-    if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+      if (dist < MAX_DISTANCE) {
+        let opacity = 1 - dist / MAX_DISTANCE;
 
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
-    ctx.fillStyle = "rgba(0,0,0,0.2)";
-    ctx.fill();
-  });
-
-  for (let i = 0; i < particles.length; i++) {
-    for (let j = i; j < particles.length; j++) {
-      let dx = particles[i].x - particles[j].x;
-      let dy = particles[i].y - particles[j].y;
-      let dist = Math.sqrt(dx*dx + dy*dy);
-
-      if (dist < 120) {
+        ctx.strokeStyle = "rgba(0,0,0," + (opacity * 0.15) + ")";
+        ctx.lineWidth = 1;
         ctx.beginPath();
-        ctx.moveTo(particles[i].x, particles[i].y);
-        ctx.lineTo(particles[j].x, particles[j].y);
-        ctx.strokeStyle = "rgba(0,0,0,0.05)";
+        ctx.moveTo(particles[a].x, particles[a].y);
+        ctx.lineTo(particles[b].x, particles[b].y);
+        ctx.stroke();
+      }
+    }
+
+    if (mouse.x && mouse.y) {
+      let dx = particles[a].x - mouse.x;
+      let dy = particles[a].y - mouse.y;
+      let dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist < MAX_DISTANCE) {
+        ctx.strokeStyle = "rgba(0,0,0,0.2)";
+        ctx.beginPath();
+        ctx.moveTo(particles[a].x, particles[a].y);
+        ctx.lineTo(mouse.x, mouse.y);
         ctx.stroke();
       }
     }
   }
-
-  requestAnimationFrame(draw);
 }
 
-draw();
+function animate() {
+  ctx.clearRect(0, 0, width, height);
 
-window.addEventListener("resize", () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-});
+  particles.forEach(p => {
+    p.move();
+    p.draw();
+  });
+
+  connect();
+
+  requestAnimationFrame(animate);
+}
+
+animate();
 </script>
 
 </body>
