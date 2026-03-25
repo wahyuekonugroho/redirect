@@ -13,41 +13,32 @@ body {
   background: linear-gradient(135deg, #e3f2fd, #f4f6f8);
 }
 
-/* CANVAS */
+/* NETWORK */
 #network {
   position: fixed;
   top: 0;
   left: 0;
   z-index: 0;
-}
-
-/* GEAR */
-.bg {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  opacity: 0.35;
-  pointer-events: none;
+  filter: blur(1.5px);
 }
 
 /* CONTENT */
 .container {
   position: relative;
-  z-index: 3;
+  z-index: 2;
   height: 100vh;
   padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  text-align: center;
   backdrop-filter: blur(3px);
+  text-align: center;
 }
 
 /* LOGO */
 .logo {
-  height: 160px;
+  height: 150px;
   margin-bottom: 20px;
   animation: floatSmooth 5s ease-in-out infinite;
 }
@@ -75,7 +66,7 @@ body {
   50% { transform: translateY(-30px); }
 }
 
-/* COUNTDOWN MERAH + GOLD GLOW */
+/* COUNTDOWN */
 #countdown {
   font-size: 32px;
   font-weight: bold;
@@ -88,11 +79,10 @@ body {
     0 0 20px rgba(255,152,0,0.7),
     0 0 30px rgba(255,215,0,0.6);
 
-  animation: goldGlowPulse 2s ease-in-out infinite;
+  animation: glowPulse 2s ease-in-out infinite;
 }
 
-/* GLOW ANIMATION */
-@keyframes goldGlowPulse {
+@keyframes glowPulse {
   0% {
     text-shadow:
       0 0 5px rgba(255,215,0,0.6),
@@ -100,10 +90,9 @@ body {
   }
   50% {
     text-shadow:
-      0 0 10px rgba(255,215,0,1),
-      0 0 25px rgba(255,193,7,0.9),
-      0 0 40px rgba(255,152,0,0.8),
-      0 0 60px rgba(255,215,0,0.6);
+      0 0 15px rgba(255,215,0,1),
+      0 0 30px rgba(255,193,7,0.9),
+      0 0 50px rgba(255,152,0,0.8);
   }
   100% {
     text-shadow:
@@ -112,29 +101,21 @@ body {
   }
 }
 
-/* GEAR ROTATION */
-@keyframes cw { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
-@keyframes ccw { from { transform: rotate(360deg);} to { transform: rotate(0deg);} }
-
-.gear-big { animation: cw 20s linear infinite; }
-.gear-small { animation: ccw 10s linear infinite; }
-.gear-small2 { animation: ccw 12s linear infinite; }
-
 /* FOOTER */
 .footer {
   position: fixed;
-  bottom: 8px;
+  bottom: 12px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 9px;
-  color: #263238;
-  background: rgba(255,255,255,0.9);
-  padding: 4px 10px;
-  border-radius: 6px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  font-size: 11px;
+  color: #fff;
+  background: rgba(0,0,0,0.6);
+  padding: 6px 14px;
+  border-radius: 8px;
+  backdrop-filter: blur(6px);
   opacity: 0;
   transition: 1s;
-  z-index: 999;
+  z-index: 3;
 }
 .footer.show { opacity: 1; }
 
@@ -157,19 +138,6 @@ body {
 
 <canvas id="network"></canvas>
 
-<!-- GEAR -->
-<svg class="bg" viewBox="0 0 800 600">
-  <g class="gear-big">
-    <circle cx="300" cy="300" r="90" fill="none" stroke="#455a64" stroke-width="12"/>
-  </g>
-  <g class="gear-small">
-    <circle cx="420" cy="300" r="50" fill="none" stroke="#78909c" stroke-width="10"/>
-  </g>
-  <g class="gear-small2">
-    <circle cx="500" cy="220" r="40" fill="none" stroke="#607d8b" stroke-width="8"/>
-  </g>
-</svg>
-
 <div class="container">
   <img class="logo" src="https://www.gayamotor.astra.co.id/images/logo/logo-primary.png">
   <h2>Pendaftaran Skill Contest 2026</h2>
@@ -179,55 +147,40 @@ body {
 
 <p class="footer">Designed by Wahyu (Innovation Committee)</p>
 
-<!-- SOUND -->
-<audio id="gearSound" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
-
 <script>
-const target = new Date("2026-03-30T00:00:00+07:00").getTime();
+const target = new Date("2026-03-25T00:00:00+07:00").getTime();
 const el = document.getElementById("countdown");
 const logo = document.querySelector(".logo");
-const sound = document.getElementById("gearSound");
 
-/* unlock audio */
-document.addEventListener("click", () => {
-  sound.play().then(()=>{
-    sound.pause();
-    sound.currentTime = 0;
-  }).catch(()=>{});
-}, { once:true });
+let redirected = false;
 
-function playSound(){
-  sound.currentTime = 0;
-  sound.volume = 0.2;
-  sound.play().catch(()=>{});
-}
-
-/* COUNTDOWN */
 setInterval(()=>{
-  let now = new Date().getTime();
+  let now = Date.now();
   let d = target - now;
 
   if(d <= 0){
     el.innerHTML = "✅ Pendaftaran telah dibuka!";
     logo.classList.remove("bounce");
     logo.classList.add("bounce-strong");
-    playSound();
+
+    if(!redirected){
+      redirected = true;
+      setTimeout(()=>{
+        window.location.href = "https://docs.google.com/forms/d/1FAGzm5Ge-z6QferymjOr19b3LIbRyYb6yb8e8mQz5p4/edit?ts=69c3b15e";
+      }, 10000);
+    }
     return;
   }
 
-  let dd=Math.floor(d/(1000*60*60*24));
-  let hh=Math.floor((d/(1000*60*60))%24);
-  let mm=Math.floor((d/(1000*60))%60);
-  let ss=Math.floor((d/1000)%60);
+  let dd = Math.floor(d / (1000*60*60*24));
+  let hh = Math.floor((d / (1000*60*60)) % 24);
+  let mm = Math.floor((d / (1000*60)) % 60);
+  let ss = Math.floor((d / 1000) % 60);
 
-  el.innerHTML=`${dd} hari ${hh} jam ${mm} menit ${ss} detik`;
+  el.innerHTML = `${dd} hari ${hh} jam ${mm} menit ${ss} detik`;
 
   if(d < 10000){
     logo.classList.add("bounce");
-  }
-
-  if(d < 5000){
-    playSound();
   }
 
 },1000);
@@ -235,35 +188,57 @@ setInterval(()=>{
 /* FOOTER */
 setTimeout(()=>{
   document.querySelector(".footer").classList.add("show");
-},4000);
+},3000);
 
-/* NETWORK */
-const c=document.getElementById("network");
-const x=c.getContext("2d");
-let w,h,p=[];
+/* NETWORK BACKGROUND */
+const c = document.getElementById("network");
+const ctx = c.getContext("2d");
 
-function r(){w=c.width=innerWidth;h=c.height=innerHeight;}
-r(); addEventListener("resize",r);
+let w,h,particles=[];
 
-for(let i=0;i<50;i++){
-  p.push({
-    x:Math.random()*w,
-    y:Math.random()*h,
-    vx:(Math.random()-0.5)*0.3,
-    vy:(Math.random()-0.5)*0.3
+function resize(){
+  w = c.width = innerWidth;
+  h = c.height = innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
+for(let i=0;i<60;i++){
+  particles.push({
+    x: Math.random()*w,
+    y: Math.random()*h,
+    vx:(Math.random()-0.5)*0.4,
+    vy:(Math.random()-0.5)*0.4
   });
 }
 
 function draw(){
-  x.clearRect(0,0,w,h);
-  p.forEach(pt=>{
-    pt.x+=pt.vx;
-    pt.y+=pt.vy;
-    x.beginPath();
-    x.arc(pt.x,pt.y,2,0,6.28);
-    x.fillStyle="rgba(21,101,192,0.7)";
-    x.fill();
+  ctx.clearRect(0,0,w,h);
+
+  particles.forEach((p,i)=>{
+    p.x += p.vx;
+    p.y += p.vy;
+
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,2,0,Math.PI*2);
+    ctx.fillStyle="rgba(21,101,192,0.6)";
+    ctx.fill();
+
+    for(let j=i+1;j<particles.length;j++){
+      let dx=p.x-particles[j].x;
+      let dy=p.y-particles[j].y;
+      let dist=Math.sqrt(dx*dx+dy*dy);
+
+      if(dist<120){
+        ctx.strokeStyle="rgba(21,101,192,0.15)";
+        ctx.beginPath();
+        ctx.moveTo(p.x,p.y);
+        ctx.lineTo(particles[j].x,particles[j].y);
+        ctx.stroke();
+      }
+    }
   });
+
   requestAnimationFrame(draw);
 }
 draw();
