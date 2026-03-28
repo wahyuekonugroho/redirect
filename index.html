@@ -19,14 +19,15 @@ body {
   top: 0;
   left: 0;
   z-index: 0;
-  filter: blur(1px);
+  filter: blur(0.5px); /* lebih tajam */
+  opacity: 0.8; /* lebih terlihat */
 }
 
 /* CONTAINER */
 .container {
   position: relative;
   z-index: 2;
-  padding: 20px;
+  padding: 50px;
   text-align: center;
   background: rgba(255,255,255,0.2);
   backdrop-filter: blur(4px);
@@ -190,8 +191,17 @@ body {
 
 /* FOOTER */
 .footer {
-  font-size: 10px;
-  opacity: 0.6;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 12px;
+  opacity: 0.8;
+  padding: 10px 0;
+  z-index: 10;
+  background: transparent;
+  backdrop-filter: none;
 }
 </style>
 </head>
