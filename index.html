@@ -8,9 +8,9 @@
 <style>
 body {
   margin: 0;
-  overflow: hidden;
   font-family: 'Segoe UI', Arial, sans-serif;
   background: linear-gradient(135deg, #e3f2fd, #f4f6f8);
+  overflow-x: hidden;
 }
 
 /* NETWORK */
@@ -19,51 +19,44 @@ body {
   top: 0;
   left: 0;
   z-index: 0;
-  filter: blur(1.5px);
+  filter: blur(1px);
 }
 
-/* CONTENT */
+/* CONTAINER */
 .container {
   position: relative;
   z-index: 2;
-  height: 100vh;
   padding: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  backdrop-filter: blur(3px);
   text-align: center;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(4px);
+  border-radius: 12px;
+  margin: 10px;
 }
 
 /* LOGO */
 .logo {
-  height: 150px;
-  margin-bottom: 20px;
-  animation: floatSmooth 5s ease-in-out infinite;
+  height: 120px;
+  margin-bottom: 15px;
+  animation: float 4s ease-in-out infinite;
 }
 
-@keyframes floatSmooth {
+@keyframes float {
   0%,100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
 }
 
-/* BOUNCE */
+/* LOGO BOUNCE */
 .logo.bounce {
-  animation: bounce 0.6s infinite;
-}
-.logo.bounce-strong {
-  animation: bounceStrong 0.4s infinite;
+  animation: bigBounce 0.8s ease infinite;
 }
 
-@keyframes bounce {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-18px); }
-}
-
-@keyframes bounceStrong {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-30px); }
+@keyframes bigBounce {
+  0%   { transform: translateY(0) scale(1); }
+  30%  { transform: translateY(-25px) scale(1.1); }
+  50%  { transform: translateY(0) scale(0.95); }
+  70%  { transform: translateY(-10px) scale(1.05); }
+  100% { transform: translateY(0) scale(1); }
 }
 
 /* COUNTDOWN */
@@ -71,65 +64,134 @@ body {
   font-size: 32px;
   font-weight: bold;
   color: #d32f2f;
-  letter-spacing: 1px;
-
   text-shadow:
-    0 0 5px rgba(255,215,0,0.9),
+    0 0 5px rgba(255,215,0,0.8),
     0 0 10px rgba(255,193,7,0.8),
-    0 0 20px rgba(255,152,0,0.7),
-    0 0 30px rgba(255,215,0,0.6);
-
-  animation: glowPulse 2s ease-in-out infinite;
+    0 0 20px rgba(255,152,0,0.7);
 }
 
-@keyframes glowPulse {
-  0% {
-    text-shadow:
-      0 0 5px rgba(255,215,0,0.6),
-      0 0 10px rgba(255,193,7,0.5);
-  }
-  50% {
-    text-shadow:
-      0 0 15px rgba(255,215,0,1),
-      0 0 30px rgba(255,193,7,0.9),
-      0 0 50px rgba(255,152,0,0.8);
-  }
-  100% {
-    text-shadow:
-      0 0 5px rgba(255,215,0,0.6),
-      0 0 10px rgba(255,193,7,0.5);
-  }
+/* BUTTON */
+.btn {
+  display: inline-block;
+  margin: 10px;
+  padding: 12px 20px;
+  font-weight: bold;
+  color: #fff;
+  background: linear-gradient(45deg, #1976d2, #42a5f5);
+  border-radius: 25px;
+  text-decoration: none;
+  transition: 0.3s;
+  box-shadow: 0 4px 15px rgba(25,118,210,0.4);
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+}
+
+/* BUTTON BOUNCE */
+.btn.bounce {
+  animation: btnBounce 0.7s ease infinite;
+}
+
+@keyframes btnBounce {
+  0%   { transform: translateY(0) scale(1); }
+  30%  { transform: translateY(-10px) scale(1.1); }
+  50%  { transform: translateY(0) scale(0.95); }
+  70%  { transform: translateY(-8px) scale(1.05); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+/* ACTION BUTTON */
+#actionButtons {
+  display: none;
+  opacity: 0;
+  transition: 0.5s;
+}
+
+#actionButtons.show {
+  display: block;
+  opacity: 1;
+}
+
+/* FAQ */
+.faq {
+  max-width: 650px;
+  margin: 30px auto;
+  text-align: left;
+}
+
+.faq h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #1976d2;
+}
+
+/* SEARCH */
+#faqSearch {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+/* ITEM */
+.faq-item {
+  background: rgba(255,255,255,0.9);
+  border-radius: 12px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+/* QUESTION */
+.faq-question {
+  padding: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  background: #1976d2;
+  color: #fff;
+  position: relative;
+}
+
+.faq-question:hover {
+  background: #1565c0;
+}
+
+.faq-question::after {
+  content: "+";
+  position: absolute;
+  right: 15px;
+}
+
+.faq-item.active .faq-question::after {
+  content: "−";
+}
+
+/* ANSWER */
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  padding: 0 14px;
+  transition: 0.4s;
+  opacity: 0;
+}
+
+.faq-item.active .faq-answer {
+  max-height: 500px;
+  padding: 14px;
+  opacity: 1;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+  #countdown { font-size: 24px; }
+  .logo { height: 90px; }
 }
 
 /* FOOTER */
 .footer {
-  position: fixed;
-  bottom: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 8px;
-  color: #fff;
-  background: rgba(0,0,0,0.6);
-  padding: 6px 14px;
-  border-radius: 8px;
-  backdrop-filter: blur(6px);
-  opacity: 0;
-  transition: 1s;
-  z-index: 3;
-}
-.footer.show { opacity: 1; }
-
-/* RESPONSIVE */
-@media (max-width: 768px) {
-  .logo { height: 120px; }
-  #countdown { font-size: 24px; }
-}
-
-@media (max-width: 480px) {
-  .logo { height: 90px; }
-  #countdown { font-size: 18px; }
-  h2 { font-size: 16px; }
-  p { font-size: 12px; }
+  font-size: 10px;
+  opacity: 0.6;
 }
 </style>
 </head>
@@ -140,35 +202,91 @@ body {
 
 <div class="container">
   <img class="logo" src="https://www.gayamotor.astra.co.id/images/logo/logo-primary.png">
+
   <h2>Pendaftaran Skill Contest 2026</h2>
   <p>Pendaftaran akan dibuka dalam:</p>
+
   <div id="countdown">Loading...</div>
+
+  <div id="actionButtons">
+    <a href="#" id="btnRegister" class="btn">🚀 Daftar Sekarang</a>
+  </div>
+
+ <div class="faq">
+  <h3>❓ <b>[Frequently Asked Questions]</b></h3>
+
+  <input type="text" id="faqSearch" placeholder="🔍 Cari pertanyaan...">
+
+  <!-- PERTANYAAN 1 -->
+  <div class="faq-item">
+    <div class="faq-question">
+      Untuk pendaftaran Contingent Skill Contest Gaya Motor 2026, cabang lomba apa saja yang dibuka?
+    </div>
+
+    <div class="faq-answer">
+      Untuk Skill Contest 2026, cabang lomba yang dibuka adalah:
+      <ol>
+        <li>Welding</li>
+        <li>Painting</li>
+        <li>Assembling</li>
+        <li>Maintenance</li>
+        <li>Inspection / Quality</li>
+        <li>Logistic</li>
+        <li>Safety / HSE</li>
+      </ol>
+
+      <br>
+      📢 <b>Informasi:</b><br>
+      Saat ini pendaftaran dibuka untuk seluruh karyawan pada cabang lomba tersebut, 
+      yang nantinya akan dipersiapkan untuk mengikuti Skill Contest ASMO III dan MASIF 2026
+    </div>
+  </div>
+
+  <!-- PERTANYAAN 2 -->
+  <div class="faq-item">
+    <div class="faq-question">
+      Jika saya bekerja di bidang Welding dan Painting, apakah boleh mendaftar di bidang Logistic?
+    </div>
+
+    <div class="faq-answer">
+      <b>Tentu saja boleh!</b><br><br>
+
+      Kamu dapat memilih cabang lomba sesuai dengan minat dan kemampuan (skill) 
+      yang kamu miliki, tanpa harus sesuai dengan pekerjaanmu saat ini.
+      <br><br>
+
+      💡 <b>Catatan:</b><br>
+      Pastikan kamu benar-benar memiliki kemampuan di bidang yang dipilih agar bisa 
+      mengikuti proses seleksi dan training dengan maksimal
+    </div>
+  </div>
+
 </div>
 
-<p class="footer">Designed by Wahyu (Innovation Committee)</p>
+  <div class="footer">Designed by Wahyu (Innovation Committee)</div>
+</div>
 
 <script>
-const target = new Date("2026-03-30T00:00:00+07:00").getTime();
+// COUNTDOWN
+const target = new Date("2026-03-30T00:00:00").getTime();
 const el = document.getElementById("countdown");
-const logo = document.querySelector(".logo");
+const linkRegister = "https://docs.google.com/forms/d/e/1FAIpQLSfhlgr9a9cmngx78u7G1JMut_s-SwvM-edgAMAvkHxe04hM1w/viewform";
 
-let redirected = false;
-
-setInterval(()=>{
-  let now = Date.now();
-  let d = target - now;
+const timer = setInterval(()=>{
+  let d = target - Date.now();
 
   if(d <= 0){
     el.innerHTML = "✅ Pendaftaran telah dibuka!";
-    logo.classList.remove("bounce");
-    logo.classList.add("bounce-strong");
+    document.getElementById("actionButtons").classList.add("show");
+    document.getElementById("btnRegister").href = linkRegister;
 
-    if(!redirected){
-      redirected = true;
-      setTimeout(()=>{
-        window.location.href = "https://docs.google.com/forms/d/1FAGzm5Ge-z6QferymjOr19b3LIbRyYb6yb8e8mQz5p4/edit?ts=69c3b15e";
-      }, 10000);
-    }
+    document.querySelector(".logo").classList.add("bounce");
+
+    setTimeout(()=>{
+      document.getElementById("btnRegister").classList.add("bounce");
+    },300);
+
+    clearInterval(timer);
     return;
   }
 
@@ -178,37 +296,59 @@ setInterval(()=>{
   let ss = Math.floor((d / 1000) % 60);
 
   el.innerHTML = `${dd} hari ${hh} jam ${mm} menit ${ss} detik`;
-
-  if(d < 10000){
-    logo.classList.add("bounce");
-  }
-
 },1000);
 
-/* FOOTER */
-setTimeout(()=>{
-  document.querySelector(".footer").classList.add("show");
-},3000);
+// STOP BOUNCE SAAT DIKLIK
+document.getElementById("btnRegister").addEventListener("click", function(){
+  this.classList.remove("bounce");
+});
 
-/* NETWORK BACKGROUND */
+// FAQ CLICK
+document.querySelectorAll(".faq-question").forEach(q=>{
+  q.addEventListener("click",()=>{
+    const item=q.parentElement;
+    document.querySelectorAll(".faq-item").forEach(i=>{
+      if(i!==item) i.classList.remove("active");
+    });
+    item.classList.toggle("active");
+  });
+});
+
+// SEARCH FAQ
+document.getElementById("faqSearch").addEventListener("input", function() {
+  const keyword = this.value.toLowerCase();
+
+  document.querySelectorAll(".faq-item").forEach(item => {
+    const text = item.innerText.toLowerCase();
+
+    if(text.includes(keyword)){
+      item.style.display = "block";
+      item.classList.add("active");
+    } else {
+      item.style.display = "none";
+      item.classList.remove("active");
+    }
+  });
+});
+
+// NETWORK ANIMATION
 const c = document.getElementById("network");
 const ctx = c.getContext("2d");
 
 let w,h,particles=[];
-
 function resize(){
-  w = c.width = innerWidth;
-  h = c.height = innerHeight;
+  w=c.width=innerWidth;
+  h=c.height=innerHeight;
 }
 resize();
 window.addEventListener("resize", resize);
 
-for(let i=0;i<60;i++){
+for(let i=0;i<40;i++){
   particles.push({
-    x: Math.random()*w,
-    y: Math.random()*h,
-    vx:(Math.random()-0.5)*0.4,
-    vy:(Math.random()-0.5)*0.4
+    x:Math.random()*w,
+    y:Math.random()*h,
+    vx:(Math.random()-0.5)*0.8,
+    vy:(Math.random()-0.5)*0.8
   });
 }
 
@@ -216,12 +356,12 @@ function draw(){
   ctx.clearRect(0,0,w,h);
 
   particles.forEach((p,i)=>{
-    p.x += p.vx;
-    p.y += p.vy;
+    p.x+=p.vx;
+    p.y+=p.vy;
 
     ctx.beginPath();
     ctx.arc(p.x,p.y,2,0,Math.PI*2);
-    ctx.fillStyle="rgba(21,101,192,0.6)";
+    ctx.fillStyle="rgba(21,101,192,0.9)";
     ctx.fill();
 
     for(let j=i+1;j<particles.length;j++){
@@ -230,7 +370,7 @@ function draw(){
       let dist=Math.sqrt(dx*dx+dy*dy);
 
       if(dist<120){
-        ctx.strokeStyle="rgba(21,101,192,0.15)";
+        ctx.strokeStyle="rgba(21,101,192,0.3)";
         ctx.beginPath();
         ctx.moveTo(p.x,p.y);
         ctx.lineTo(particles[j].x,particles[j].y);
